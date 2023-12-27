@@ -1,0 +1,7 @@
+name: büchi
+channels:
+  - defaults
+dependencies:
+  - networkx
+  - matplotlib
+prefix: /home/max/anaconda3/envs/büchi
