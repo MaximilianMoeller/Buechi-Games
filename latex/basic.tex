@@ -1,0 +1,39 @@
+% !TEX TS-program = lualatex
+
+\documentclass{standalone}
+
+\input{preamble.tex}
+
+\begin{document}
+
+% use of \tikzstyle is disencouraged, see
+% https://tex.stackexchange.com/questions/52372/should-tikzset-or-tikzstyle-be-used-to-define-tikz-styles
+\tikzset{vertex/.style={semithick, draw, black, fill=white, inner sep=0pt, minimum size=4.5mm}}
+\tikzset{eve/.style={vertex, circle}}
+\tikzset{adam/.style={vertex, rectangle}}
+
+\tikzset{my arrows/.style={->,shorten >=0.5pt,>={Stealth[round]},semithick}}
+\tikzset{win/.style={my arrows, color=cdblue}}
+\tikzset{other/.style={my arrows, black}}
+
+\begin{tikzpicture}
+	\foreach \x/\owner in {0/eve, 1/adam, 2/eve, 3/eve}{
+		\node[\owner] (\x) at (\x*2, 0) {$v_{\x}$};
+	}
+	\foreach \x/\owner in {4/adam, 5/eve, 6/adam, 7/eve}{
+		\node[\owner] (\x) at ({(\x-4)*2}, -1.5) {$v_{\x}$};
+	}
+
+	\foreach \s/\t in {0/1, 1/2, 1/4, 2/6, 3/7, 4/5, 6/7}{
+		\draw (\s) edge [other] (\t);
+	}
+	\foreach \s/\t in {4/0, 2/3, 3/2, 5/6, 6/5}{
+		\draw (\s) edge [other, bend left=20] (\t);
+	}
+
+	\draw (0) edge [other, bend left=20, win] (4);
+	\draw (5) edge [out=60, in=120, loop, win] ();
+	\draw (7) edge [out=330, in=30, loop, my arrows] ();
+\end{tikzpicture}
+	
+\end{document}
