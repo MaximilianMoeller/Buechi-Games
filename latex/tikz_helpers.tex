@@ -1,0 +1,44 @@
+\usetikzlibrary{arrows.meta, automata, graphs, positioning, backgrounds, calc}
+
+% use of \tikzstyle is disencouraged, see
+% https://tex.stackexchange.com/questions/52372/should-tikzset-or-tikzstyle-be-used-to-define-tikz-styles
+\tikzset{vertex/.style={semithick, draw, black, fill=white, inner sep=0pt, minimum size=4.5mm}}
+\tikzset{eve/.style={vertex, circle}}
+\tikzset{adam/.style={vertex, rectangle}}
+
+\tikzset{my arrows/.style={->,shorten >=0.5pt,>={Stealth[round]},semithick}}
+\tikzset{win/.style={color=cdblue, my arrows}}
+\tikzset{other/.style={color=cdgrey, my arrows}}
+
+\tikzset{highlight/.style={dashed, fill=#1!10, draw=#1!80},
+		 highlight/.default=cdblue}
+
+\newcommand{\convexpath}[2]{
+  [   
+  create hullcoords/.code={
+    \global\edef\namelist{#1}
+    \foreach [count=\counter] \nodename in \namelist {
+      \global\edef\numberofnodes{\counter}
+      \coordinate (hullcoord\counter) at (\nodename);
+    }
+    \coordinate (hullcoord0) at (hullcoord\numberofnodes);
+    \pgfmathtruncatemacro\lastnumber{\numberofnodes+1}
+    \coordinate (hullcoord\lastnumber) at (hullcoord1);
+  },
+  create hullcoords
+  ]
+  ($(hullcoord1)!#2!-90:(hullcoord0)$)
+  \foreach [
+  evaluate=\currentnode as \previousnode using \currentnode-1,
+  evaluate=\currentnode as \nextnode using \currentnode+1
+  ] \currentnode in {1,...,\numberofnodes} {
+    let \p1 = ($(hullcoord\currentnode) - (hullcoord\previousnode)$),
+    \n1 = {atan2(\y1,\x1) + 90},
+    \p2 = ($(hullcoord\nextnode) - (hullcoord\currentnode)$),
+    \n2 = {atan2(\y2,\x2) + 90},
+    \n{delta} = {Mod(\n2-\n1,360) - 360}
+    in 
+    {arc [start angle=\n1, delta angle=\n{delta}, radius=#2]}
+    -- ($(hullcoord\nextnode)!#2!-90:(hullcoord\currentnode)$) 
+  }
+}
