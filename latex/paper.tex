@@ -53,6 +53,7 @@
 \newpage
 
 \begin{figure}
+\resizebox{0.95\linewidth}{!}{
 \begin{tikzpicture}
 	\foreach \x/\owner in {0/eve, 1/adam, 2/eve, 3/eve}{
 		\node[\owner] (\x) at (\x*2, 0) {$v_{\x}$};
@@ -76,9 +77,13 @@
 		\draw[highlight] \convexpath{0,5,4}{4mm};
 		\node[circle, highlight, minimum size=8.5mm] at (6) {};
 	\end{pgfonlayer}
-\end{tikzpicture}
+\end{tikzpicture}}
 \caption[short]{long}
 \label{fig:example_game}
 \end{figure}
+
+\section{Introduction}
+\section{1st Algorithm}
+
 	
 \end{document}

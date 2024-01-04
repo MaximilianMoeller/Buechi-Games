@@ -37,47 +37,121 @@
 \end{frame}
 
 \section{Introduction}
-\begin{frame}
-	\frametitle{A Game}	
-	\begin{columns}
-	\begin{column}{0.4\textwidth}
-		\begin{itemize}
-			\item first
-			\item second
-		\end{itemize}
-	\end{column}
-
-	\begin{column}{0.6\textwidth}		
+\begin{frame}{A Game}
+	\foreach \c in {1,...,20}{
+		\only<\c>{\c}
+	}
 	\centering
 	% "{!}" = keep aspect ratios
-	\resizebox{0.95\linewidth}{!}{
-	\begin{tikzpicture}
-		\foreach \x/\owner in {0/eve, 1/adam, 2/eve, 3/eve}{
-			\node[\owner] (\x) at (\x*2, 0) {$v_{\x}$};
-		}
-		\foreach \x/\owner in {4/adam, 5/eve, 6/adam, 7/eve}{
-			\node[\owner] (\x) at ({(\x-4)*2}, -1.5) {$v_{\x}$};
-		}
-	
-		\foreach \s/\t in {0/1, 1/2, 1/4, 2/6, 3/7, 4/5, 6/7}{
-			\draw (\s) edge[other] (\t);
-		}
-		\foreach \s/\t in {4/0, 2/3, 3/2, 5/6, 6/5}{
-			\draw (\s) edge [other, bend left=20] (\t);
-		}
-	
-		\draw (0) edge [win, bend left=20] (4);
-		\draw (5) edge [win, out=60, in=120, loop] ();
-		\draw (7) edge [other, out=330, in=30, loop] ();
+	\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}[remember picture]
+			\node[eve]  (0) at (0, 0) {$v_{0}$};
+			\node[adam] (1) at (2, 0) {$v_{1}$};
+			\node[eve]  (2) at (4, 0) {$v_{2}$};
+			\onslide<1-13>{\node[adam]  (3) at (6, 0) {$v_{3}$};}
+
+			\node[adam] (4) at (0, -1.5) {$v_{4}$};
+			\node[eve]  (5) at (2, -1.5) {$v_{5}$};
+			\onslide<1-13>{\node[adam] (6) at (4, -1.5) {$v_{6}$};}
+			\onslide<1-13>{\node[eve]  (7) at (6, -1.5) {$v_{7}$};}
+
+			\draw (0) edge[other] (1);
+			\invisible<15>{\draw (0) edge [win, bend left=20] (4);}
+
+			\draw (1) edge[other] (2);
+			\draw (1) edge[other] (4);
+			
+			\onslide<1-13>{
+				\draw (2) edge [other, bend left=20] (3);
+				\draw (2) edge[other] (6);
+			}
+
+			\onslide<1-13>{
+				\draw (3) edge [other, bend left=20] (2);
+				\draw (3) edge[other] (7);
+			}
+			
+			\draw (4) edge [other, bend left=20] (0);
+			\draw (4) edge[other] (5);
+			
+			\invisible<15>{\draw (5) edge [win, out=60, in=120, loop] ();}
+			\onslide<1-13>{
+				\draw (5) edge [other, bend left=20] (6);
+			}
+
+			\onslide<1-13>{
+				\draw (6) edge [win, bend left=20] (5);
+				\draw (6) edge [win] (7);
+
+				\draw (7) edge [other, out=330, in=30, loop] ();
+			}
 	
 		\begin{pgfonlayer}{background}
-			\draw[highlight] \convexpath{0,5,4}{4mm};
-			\node[circle, highlight, minimum size=8.5mm] at (6) {};
+			%\onslide<1->{\draw[highlight] \convexpath{0,6,5}{4mm};}
+			\onslide<3-4>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,6,5}{5mm};}
+
+			\onslide<2-3>{
+				\node[circle, highlight, minimum size=8mm] at (0) {};
+				\node[circle, highlight, minimum size=8mm] at (5) {};
+				\node[circle, highlight, minimum size=8mm] at (6) {};
+			}
+
+			\onslide<5>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,2,6,5,4}{5mm};}
+			\onslide<6-7>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,1,2,6,5,4}{5mm};}
+			\onslide<8-9>{
+				\only<9>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7}{5mm};}
+				\node[circle, highlight, minimum size=8mm] at (7) {};
+				\node[circle, highlight, minimum size=8mm] at (3) {};
+			}
+			\onslide<10-12>{
+				\only<10>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7,6}{5mm};}
+				\only<11>{\draw[highlight=cdgrey!20!20, solid] \convexpath{2,3,7,6}{5mm};}
+				\only<12>{\draw[highlight=cdgrey!20!20, solid] \convexpath{1,2,3,7,6}{5mm};}
+			}
+
+			\onslide<16>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5}{5mm};}
+
+			\onslide<15-16>{
+				\node[circle, highlight, minimum size=8mm] at (0) {};
+				\node[circle, highlight, minimum size=8mm] at (5) {};
+			}
+
+			\onslide<17-18>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,4}{5mm};}
+
+			\onslide<19>{
+				\node[circle, highlight, minimum size=8mm] at (1) {};
+				\node[circle, highlight, minimum size=8mm] at (2) {};
+			}
+
 		\end{pgfonlayer}
 \end{tikzpicture}}
-	\end{column}
-		
-	\end{columns}
+% overprint makes sure the same amount of space is resvered on every slide -> no ‘wiggling’ of the figure
+\begin{overlayarea}{\textwidth}{2cm}
+\only<15>{Assuming page 12 is the correct one from now on.}
+\only<2,15>{
+	\begin{align*}
+		\var{Win}' = &\left\{ u \in V_{E} \mid \exists e = (u \to v) \in E, e \in \var{Win} \right\} \\
+					 &\cup \left\{ u \in V_{A} \mid \forall e = (u \to v) \in E, e \in \var{Win} \right\}		
+	\end{align*}}
+\[
+	\only<3>{\func{Attr}_{\var{Eve}}^{0}(\var{Win})=\var{Win}'}
+	\only<4-6,16-17>{\func{Attr}_{\var{Eve}}^{k+1}(\var{Win})=\var{Win}' \cup \func{Pre}_{\var{Eve}}\left(\func{Attr}_{\var{Eve}}^{k}(\var{Win})\right)}
+	\only<7,18>{\func{Attr}_{\var{Eve}}(\var{Win}) \neq V}
+	\only<8,19>{V \setminus \func{Attr}_{\var{Eve}}(Win)}
+	\only<9-13>{\func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(Win))}
+	\only<14-15>{\mathscr{G} \setminus \func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(Win))}
+\]
+\only<14>{This is simply not defined!
+$\mathscr{G} \setminus \func{Attr}_{Adam}(F)$ is defined for $F \subseteq E$, not for $F \subseteq V$!
+And neither could it mean $\mathscr{G} \setminus X$ for some $X \subseteq V$, since this is also not defined.}
+\only<15>{But I guess that this is, what they mean (?) …}
+\only<16>{… and not this (despite the emphasized sublety on page 64), because here $W_{\var{Eve}} = \emptyset$.}
+\end{overlayarea}
 \end{frame}
-	
+
 \end{document}

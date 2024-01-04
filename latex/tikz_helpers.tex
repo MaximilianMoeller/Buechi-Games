@@ -3,11 +3,17 @@
 % └──────┘
 \usepackage{tikz}
 
-\usetikzlibrary{arrows.meta, automata, graphs, positioning, backgrounds, calc}
+\usetikzlibrary{arrows.meta, automata, graphs, positioning, backgrounds, calc, quotes}
+
+\makeatletter
+\@ifclassloaded{beamer}
+{\usetikzlibrary{overlay-beamer-styles}}{}
+\makeatother
+
 
 % use of \tikzstyle is disencouraged, see
 % https://tex.stackexchange.com/questions/52372/should-tikzset-or-tikzstyle-be-used-to-define-tikz-styles
-\tikzset{vertex/.style={semithick, draw, black, fill=white, inner sep=0pt, minimum size=4.5mm}}
+\tikzset{vertex/.style={semithick, draw, black, fill=white, inner sep=0pt, minimum size=5mm}}
 \tikzset{eve/.style={vertex, circle}}
 \tikzset{adam/.style={vertex, rectangle}}
 
@@ -15,8 +21,8 @@
 \tikzset{win/.style={color=cdblue, my arrows}}
 \tikzset{other/.style={color=cdgrey, my arrows}}
 
-\tikzset{highlight/.style={dashed, fill=#1!10, draw=#1!80},
-		 highlight/.default=cdblue}
+\tikzset{highlight/.style args={#1!#2!#3}{dashed, fill=#1!#2, draw=#1!#3},
+		 highlight/.default=cdblue!20!80}
 
 \newcommand{\convexpath}[2]{
   [   
