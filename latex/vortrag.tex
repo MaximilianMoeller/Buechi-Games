@@ -37,8 +37,134 @@
 \end{frame}
 
 \section{Introduction}
+
+\section{Algorithm I}
 \begin{frame}{A Game}
-	\foreach \c in {1,...,20}{
+	\foreach \c in {1,...,25}{
+		\only<\c>{\c}
+	}
+	\centering
+	% "{!}" = keep aspect ratios
+	\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}[remember picture]
+			\node[eve]  (0) at (0, 0) {$v_{0}$};
+			\onslide<1-13,20->{
+				\node[adam] (1) at (2, 0) {$v_{1}$};
+				\node[eve]  (2) at (4, 0) {$v_{2}$};
+				\node[adam]  (3) at (6, 0) {$v_{3}$};
+			}
+
+			\node[adam] (4) at (0, -1.5) {$v_{4}$};
+			\node[eve]  (5) at (2, -1.5) {$v_{5}$};
+			\onslide<1-13,20->{
+				\node[adam] (6) at (4, -1.5) {$v_{6}$};
+				\node[eve]  (7) at (6, -1.5) {$v_{7}$};
+			}
+
+			\onslide<1-13,20->{
+				\draw (0) edge[other] (1);
+			}
+			\invisible<15>{\draw (0) edge [win, bend left=20] (4);}
+
+			\onslide<1-13,20->{
+				\draw (1) edge[other] (2);
+				\draw (1) edge[other] (4);
+			
+				\draw (2) edge [other, bend left=20] (3);
+				\draw (2) edge[other] (6);
+
+				\draw (3) edge [other, bend left=20] (2);
+				\draw (3) edge[other] (7);
+			}
+			
+			\draw (4) edge [other, bend left=20] (0);
+			\draw (4) edge[other] (5);
+			
+			\invisible<15>{\draw (5) edge [win, out=60, in=120, loop] ();}
+			\onslide<1-13,20->{
+				\draw (5) edge [other, bend left=20] (6);
+			}
+
+			\onslide<1-13,20->{
+				\draw (6) edge [win, bend left=20] (5);
+				\draw (6) edge [win] (7);
+
+				\draw (7) edge [other, out=330, in=30, loop] ();
+			}
+	
+		\begin{pgfonlayer}{background}
+			%Backgrounds
+			\onslide<2-4>{
+				\only<3-4>{\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,6,5}{5mm};}
+
+				\node[circle, highlight, minimum size=8mm] at (0) {};
+				\node[circle, highlight, minimum size=8mm] at (5) {};
+				\node[circle, highlight, minimum size=8mm] at (6) {};
+			}
+			\onslide<5>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,2,6,5,4}{5mm};
+			}
+			\onslide<6-7>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,1,2,6,5,4}{5mm};
+			}
+			\onslide<8-9>{
+				\only<9>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7}{5mm};}
+				\node[circle, highlight, minimum size=8mm] at (7) {};
+				\node[circle, highlight, minimum size=8mm] at (3) {};
+			}
+			\onslide<10-13>{
+				\only<10>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7,6}{5mm};}
+				\only<11>{\draw[highlight=cdgrey!20!20, solid] \convexpath{2,3,7,6}{5mm};}
+				\only<12-13>{\draw[highlight=cdgrey!20!20, solid] \convexpath{1,2,3,7,6}{5mm};}
+			}
+
+			\onslide<16>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5}{5mm};
+
+				\node[circle, highlight, minimum size=8mm] at (0) {};
+				\node[circle, highlight, minimum size=8mm] at (5) {};
+			}
+
+			\onslide<17->{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,4}{5mm};
+			}
+
+		\end{pgfonlayer}
+\end{tikzpicture}}
+% overprint makes sure the same amount of space is resvered on every slide -> no ‘wiggling’ of the figure
+\begin{overlayarea}{\textwidth}{2cm}
+\only<2,16>{
+	\only<16>{Assuming slide 14 is the correct one from now on.}
+	\begin{align*}
+		\var{Win}' = &\left\{ u \in V_{E} \mid \exists e = (u \to v) \in E, e \in \var{Win} \right\} \\
+					 &\cup \left\{ u \in V_{A} \mid \forall e = (u \to v) \in E, e \in \var{Win} \right\}		
+	\end{align*}}
+\only<3-15,17>{
+\[
+	\only<3>{\func{Attr}_{\var{Eve}}^{0}(\var{Win})=\var{Win}'}
+	\only<4-6,17>{\func{Attr}_{\var{Eve}}^{k+1}(\var{Win})=\var{Win}' \cup \func{Pre}_{\var{Eve}}\left(\func{Attr}_{\var{Eve}}^{k}(\var{Win})\right)}
+	\only<7>{\func{Attr}_{\var{Eve}}(\var{Win}) \neq V}
+	\only<8>{V \setminus \func{Attr}_{\var{Eve}}(Win)}
+	\only<9-12>{\func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(\var{Win}))}
+	\only<13-15>{\mathscr{G}' = \mathscr{G} \setminus \func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(\var{Win}))}
+\]}
+\only<18-21>{
+\[
+	\onslide<18->{\func{Attr}_{\var{Eve}}(\var{Win}) = V'}
+	\onslide<19-21>{\stackrel{\onslide<21>{(1)}}{=} W_{\var{Eve}}(\mathscr{G}')}
+	\onslide<20-21>{\stackrel{\onslide<21>{(2)}}{=} W_{\var{Eve}}(\mathscr{G})}
+\]}
+\only<13>{This is simply not defined!
+$\mathscr{G} \setminus \func{Attr}_{Adam}(F)$ is defined for $F \subseteq E$, not for $F \subseteq V$!
+And neither could it mean $\mathscr{G} \setminus X$ for some $X \subseteq V$, since this is also not defined.}
+\only<14>{But I guess that what they mean is $\mathscr{G}\left[ V \setminus \func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(\var{Win})) \right]$ (see 1.7 Traps and subgames) …}
+\only<15>{… and not this (despite the emphasized sublety on page 64), because here $W_{\var{Eve}} = \emptyset$.}
+\end{overlayarea}
+\end{frame}
+
+\section{Algorithm II}
+\begin{frame}{A Game}
+	\foreach \c in {1,...,15}{
 		\only<\c>{\c}
 	}
 	\centering
@@ -48,109 +174,77 @@
 			\node[eve]  (0) at (0, 0) {$v_{0}$};
 			\node[adam] (1) at (2, 0) {$v_{1}$};
 			\node[eve]  (2) at (4, 0) {$v_{2}$};
-			\onslide<1-13>{\node[adam]  (3) at (6, 0) {$v_{3}$};}
+			\node[adam]  (3) at (6, 0) {$v_{3}$};
 
 			\node[adam] (4) at (0, -1.5) {$v_{4}$};
 			\node[eve]  (5) at (2, -1.5) {$v_{5}$};
-			\onslide<1-13>{\node[adam] (6) at (4, -1.5) {$v_{6}$};}
-			\onslide<1-13>{\node[eve]  (7) at (6, -1.5) {$v_{7}$};}
+			\node[adam] (6) at (4, -1.5) {$v_{6}$};
+			\node[eve]  (7) at (6, -1.5) {$v_{7}$};
 
 			\draw (0) edge[other] (1);
-			\invisible<15>{\draw (0) edge [win, bend left=20] (4);}
+			\draw (0) edge [win, bend left=20] (4);
 
 			\draw (1) edge[other] (2);
 			\draw (1) edge[other] (4);
-			
-			\onslide<1-13>{
-				\draw (2) edge [other, bend left=20] (3);
-				\draw (2) edge[other] (6);
-			}
+		
+			\draw (2) edge [other, bend left=20] (3);
+			\draw (2) edge[other] (6);
 
-			\onslide<1-13>{
-				\draw (3) edge [other, bend left=20] (2);
-				\draw (3) edge[other] (7);
-			}
+			\draw (3) edge [other, bend left=20] (2);
+			\draw (3) edge[other] (7);
 			
 			\draw (4) edge [other, bend left=20] (0);
 			\draw (4) edge[other] (5);
 			
-			\invisible<15>{\draw (5) edge [win, out=60, in=120, loop] ();}
-			\onslide<1-13>{
-				\draw (5) edge [other, bend left=20] (6);
-			}
+			\draw (5) edge [win, out=60, in=120, loop] ();
+			\draw (5) edge [other, bend left=20] (6);
 
-			\onslide<1-13>{
-				\draw (6) edge [win, bend left=20] (5);
-				\draw (6) edge [win] (7);
+			\draw (6) edge [win, bend left=20] (5);
+			\draw (6) edge [win] (7);
 
-				\draw (7) edge [other, out=330, in=30, loop] ();
-			}
+			\draw (7) edge [other, out=330, in=30, loop] ();
 	
 		\begin{pgfonlayer}{background}
-			%\onslide<1->{\draw[highlight] \convexpath{0,6,5}{4mm};}
-			\onslide<3-4>{
-				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,6,5}{5mm};}
-
-			\onslide<2-3>{
+			%Backgrounds
+				%\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,6,5}{5mm};
+				%\node[circle, highlight, minimum size=8mm] at (0) {};
+			\onslide<2-5>{
+				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,1,2,3,7,6,5,4}{5mm};
+			}
+			\onslide<5>{
 				\node[circle, highlight, minimum size=8mm] at (0) {};
 				\node[circle, highlight, minimum size=8mm] at (5) {};
 				\node[circle, highlight, minimum size=8mm] at (6) {};
 			}
+			\onslide<6-11>{
+				\only<6-7>{
+					\draw[highlight=cdgrey!20!20, solid] \convexpath{0,1,2,6,5,4}{5mm};
+				}
+				\only<8-11>{
+					\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,4}{5mm};
+				}
 
-			\onslide<5>{
-				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,2,6,5,4}{5mm};}
-			\onslide<6-7>{
-				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,1,2,6,5,4}{5mm};}
-			\onslide<8-9>{
-				\only<9>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7}{5mm};}
-				\node[circle, highlight, minimum size=8mm] at (7) {};
-				\node[circle, highlight, minimum size=8mm] at (3) {};
-			}
-			\onslide<10-12>{
-				\only<10>{\draw[highlight=cdgrey!20!20, solid] \convexpath{3,7,6}{5mm};}
-				\only<11>{\draw[highlight=cdgrey!20!20, solid] \convexpath{2,3,7,6}{5mm};}
-				\only<12>{\draw[highlight=cdgrey!20!20, solid] \convexpath{1,2,3,7,6}{5mm};}
-			}
-
-			\onslide<16>{
-				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5}{5mm};}
-
-			\onslide<15-16>{
-				\node[circle, highlight, minimum size=8mm] at (0) {};
-				\node[circle, highlight, minimum size=8mm] at (5) {};
-			}
-
-			\onslide<17-18>{
-				\draw[highlight=cdgrey!20!20, solid] \convexpath{0,5,4}{5mm};}
-
-			\onslide<19>{
-				\node[circle, highlight, minimum size=8mm] at (1) {};
-				\node[circle, highlight, minimum size=8mm] at (2) {};
+				\only<7,9>{
+					\node[circle, highlight, minimum size=8mm] at (0) {};
+					\node[circle, highlight, minimum size=8mm] at (5) {};
+				}
 			}
 
 		\end{pgfonlayer}
 \end{tikzpicture}}
 % overprint makes sure the same amount of space is resvered on every slide -> no ‘wiggling’ of the figure
 \begin{overlayarea}{\textwidth}{2cm}
-\only<15>{Assuming page 12 is the correct one from now on.}
-\only<2,15>{
-	\begin{align*}
-		\var{Win}' = &\left\{ u \in V_{E} \mid \exists e = (u \to v) \in E, e \in \var{Win} \right\} \\
-					 &\cup \left\{ u \in V_{A} \mid \forall e = (u \to v) \in E, e \in \var{Win} \right\}		
-	\end{align*}}
-\[
-	\only<3>{\func{Attr}_{\var{Eve}}^{0}(\var{Win})=\var{Win}'}
-	\only<4-6,16-17>{\func{Attr}_{\var{Eve}}^{k+1}(\var{Win})=\var{Win}' \cup \func{Pre}_{\var{Eve}}\left(\func{Attr}_{\var{Eve}}^{k}(\var{Win})\right)}
-	\only<7,18>{\func{Attr}_{\var{Eve}}(\var{Win}) \neq V}
-	\only<8,19>{V \setminus \func{Attr}_{\var{Eve}}(Win)}
-	\only<9-13>{\func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(Win))}
-	\only<14-15>{\mathscr{G} \setminus \func{Attr}_{\var{Adam}}(V \setminus \func{Attr}_{\var{Eve}}(Win))}
-\]
-\only<14>{This is simply not defined!
-$\mathscr{G} \setminus \func{Attr}_{Adam}(F)$ is defined for $F \subseteq E$, not for $F \subseteq V$!
-And neither could it mean $\mathscr{G} \setminus X$ for some $X \subseteq V$, since this is also not defined.}
-\only<15>{But I guess that this is, what they mean (?) …}
-\only<16>{… and not this (despite the emphasized sublety on page 64), because here $W_{\var{Eve}} = \emptyset$.}
+\only<2-3,6->{\[
+	\only<2>{Y_{0} = V}
+	\only<3, 6-10>{Y_{k+1} = \only<6,8,10>{\textcolor{cdblue}}{\func{Attr}_{\var{Eve}}}\left(\only<7,9>{\textcolor{cdblue}}{\func{Pre}_{\var{Eve}}^{\var{Win}}}(Y_{k})\right)}
+	\only<11>{Y_{k+1} = Y_{k} = W_{\var{Eve}}(\mathscr{G})}
+\]}
+\only<4-5>{
+\begin{align*}
+	\func{Pre}_{\var{Eve}}^{\var{Win}}(Y) = &\left\{ v \in V_{E} \mid \exists (v \xrightarrow{\var{Win}} v') \in E, v' \in Y \right\} \\
+											&\cup \left\{ v \in V_{A} \mid \forall (v \xrightarrow{\var{Win}} v') \in E, v' \in Y \right\}
+\end{align*}
+}
 \end{overlayarea}
 \end{frame}
 
